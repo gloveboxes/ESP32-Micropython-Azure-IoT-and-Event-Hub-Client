@@ -1,0 +1,10 @@
+{
+  "WifiSsid":"Wifi SSID",
+  "WifiPwd":"Wifi Password",
+  "Host":"YourIoTHub.azure-devices.net",
+  "DeviceId":"esp32-01",
+  "Key":"2h8RVS4+78789798798+yaAxueL/87897897b/7g=",
+  "SensorModule":"fake_sensor",
+  "SampleRate":2,
+  "Location":"syd-esp-01"
+}
