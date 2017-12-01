@@ -1,14 +1,5 @@
-# TCP support
-# https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/network_tcp.html
-
-# DHT11 and DHT22 library
-# https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/dht.html
-# import dht
-# functions related to the board - http://docs.micropython.org/en/latest/esp8266/library/machine.html
-
 import iothub
 import socket
-# SSL wrapper for Socket
 import ussl
 import utime as time
 import network
@@ -18,19 +9,6 @@ import fake_sensor
 import sensor_bme280
 import gc
 import config
-
-# Azure IoT Hub configuration
-# https://docs.microsoft.com/en-us/azure/iot-hub/
-# Shared Access Signature
-# SAS = "SharedAccessSignature sr=IoTCampAU.azure-devices.net%2Fdevices%2Fesp32&sig=y5NOb%2FhUnm%2FQbzWRZaZIYID7Rp7NvyI%2FK%2FGRPPUP%2FLM%3D&se=1511942058"
-# Host name
-# HOST = "IoTCampAU.azure-devices.net"
-# # Device name
-# DEVICE = "esp32"
-
-# KEY = "w64FgOARiFIKBcy2WpLcjkkNGVDCcEw+h0QVeclKSrY="
-# SSID = "NCW"
-# WIFIPASSWORD = "malolos5459"
 
 oled_i2c = I2C(scl=Pin(4), sda=Pin(5))
 bme_i2c = I2C(sda=Pin(21), scl=Pin(22))
@@ -149,9 +127,6 @@ def main(use_stream=True):
 
         print('messages sent: %d, errors: %d' % (count, errorCount))
         time.sleep(cfg.sampleRate)
-        
-
-
 
 oledDisplay = initDisplay(oled_i2c)
 if oledDisplay:
@@ -160,10 +135,5 @@ if oledDisplay:
 
 wlan_connect(cfg.wifiSsid, cfg.wifiPwd)
 
-time.sleep(2)
-# SAS = iot.generate_sas_token()
-
-
-# Run
-
+time.sleep(2) # allow for a little settle time
 main()
