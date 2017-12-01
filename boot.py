@@ -15,6 +15,7 @@ import network
 from machine import I2C, Pin, ADC
 import ssd1306 as oled
 import fake_sensor
+import sensor_bme280
 import gc
 import config
 
@@ -31,17 +32,15 @@ import config
 # SSID = "NCW"
 # WIFIPASSWORD = "malolos5459"
 
-i2c = I2C(scl=Pin(4), sda=Pin(5))
-display = None
-
+oled_i2c = I2C(scl=Pin(4), sda=Pin(5))
+bme_i2c = I2C(sda=Pin(21), scl=Pin(22))
 builtinLedPin = 5
-builtinLed = Pin(builtinLedPin, Pin.OUT)
+
+display = None
+builtinLed = None
 
 cfg = config.Config('config.json')
-
-mySensor = cfg.sensor.Sensor()
-# mySensor = fake_sensor.Sensor()
-
+mySensor = cfg.sensor.Sensor(bme_i2c)
 iot = iothub.IotHub(cfg.host, cfg.deviceId, cfg.key)
 
 wlan = network.WLAN(network.STA_IF)
@@ -61,13 +60,13 @@ def newSasToken():
     updateSas = False
 
 def initDisplay(i2c):
-    global display
-    i2cDevices = I2C.scan(i2c)
+    global display, builtinLed
+    i2cDevices = I2C.scan(oled_i2c)
     if 60 in i2cDevices:
-        display = oled.SSD1306_I2C(128, 64, i2c)
+        display = oled.SSD1306_I2C(128, 64, oled_i2c)
         return True
     else:
-        print('No OLED Display found')
+        builtinLed = Pin(builtinLedPin, Pin.OUT)
         return False
 
 def wlan_connect(ssid='MYSSID', password='MYPASS'):
@@ -97,7 +96,9 @@ def main(use_stream=True):
     errorCount = 0
 
     while True:
-      builtinLed.value(0) # turn on led
+      if not oledDisplay:
+        builtinLed.value(0) # turn on led
+
       checkwifi()
       newSasToken()
       count = count + 1  
@@ -143,14 +144,16 @@ def main(use_stream=True):
         print('Problem posting data')
         errorCount = errorCount + 1
       finally:
-        builtinLed.value(1) # turn off led
+        if not oledDisplay:
+          builtinLed.value(1) # turn off led
+
         print('messages sent: %d, errors: %d' % (count, errorCount))
         time.sleep(cfg.sampleRate)
         
 
 
 
-oledDisplay = initDisplay(i2c)
+oledDisplay = initDisplay(oled_i2c)
 if oledDisplay:
   display.text("welcome", 0, 0)
   display.show()
