@@ -1,9 +1,9 @@
 {
-  "WifiSsid":"NCW",
-  "WifiPwd":"malolos5459",
-  "Host":"IoTCampAU.azure-devices.net",
+  "WifiSsid":"WifiSSID",
+  "WifiPwd":"WifiPassword",
+  "Host":"YourIoTHub.azure-devices.net",
   "DeviceId":"esp32-01",
-  "Key":"2h8RVS4+QSn19f43y+yaAxueL/J4FAijskH6L3w1/7g=",
+  "Key":"2h8RVS4+898919f43y+ffhfhhgheL/J4FAijskH6L3w1/7g=",
   "SensorModule":"fake_sensor",
   "SampleRate":2,
   "Location":"syd-esp-01"
