@@ -4,7 +4,7 @@
   "Host":"YourIoTHub.azure-devices.net",
   "DeviceId":"esp32-01",
   "Key":"2h8RVS4+898919f43y+ffhfhhgheL/J4FAijskH6L3w1/7g=",
-  "SensorModule":"fake_sensor",
+  "SensorModule":"sensor_fake",
   "SampleRate":2,
   "Location":"syd-esp-01"
 }
