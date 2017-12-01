@@ -1,10 +1,10 @@
 {
-  "WifiSsid":"WifiSSID",
-  "WifiPwd":"WifiPassword",
-  "Host":"YourIoTHub.azure-devices.net",
-  "DeviceId":"esp32-01",
-  "Key":"2h8RVS4+898919f43y+ffhfhhgheL/J4FAijskH6L3w1/7g=",
-  "SensorModule":"sensor_fake",
+  "WifiSsid":"YourWiFiSSID",
+  "WifiPwd":"Your Wifi Password",
+  "Host":"Your IoT Hub.azure-devices.net",
+  "DeviceId":"esp32-02",
+  "Key":"BD5iazmYNDyuiasyawYYO0ueDzZ47Z8/RN881Lxew=",
+  "SensorModule":"sensor_bme280",
   "SampleRate":2,
-  "Location":"syd-esp-01"
+  "Location":"syd-esp32-02"
 }

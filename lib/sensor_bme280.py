@@ -2,9 +2,8 @@ import bme280
 
 
 class Sensor():
-
     def __init__(self, i2c_config):
-        self.bme = bme280.BME280(i2c=i2c_config)
+        self.bme = bme280.BME280(i2c=i2c_config, mode=5)
 
     def measure(self):
         v = self.bme.values
