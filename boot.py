@@ -34,6 +34,9 @@ import config
 i2c = I2C(scl=Pin(4), sda=Pin(5))
 display = None
 
+builtinLedPin = 5
+builtinLed = Pin(builtinLedPin, Pin.OUT)
+
 cfg = config.Config('config.json')
 
 mySensor = cfg.sensor.Sensor()
@@ -94,6 +97,7 @@ def main(use_stream=True):
     errorCount = 0
 
     while True:
+      builtinLed.value(0) # turn on led
       checkwifi()
       newSasToken()
       count = count + 1  
@@ -113,7 +117,7 @@ def main(use_stream=True):
         display.text('e:' + str(errorCount), 0, 53)
         display.show()
 
-      data = b'{"DeviceId":"%s","Id":%u,"Mem":%u,"Celsius":%s,"hPa":%s,"Humidity":%s, "Geo":"%s", "Light":%d, "Errors",%d}' % (cfg.deviceId, count, freeMemory, temperature, pressure, humidity, cfg.location, light, errorCount)
+      data = b'{"DeviceId":"%s","Id":%u,"Mem":%u,"Celsius":%s,"hPa":%s,"Humidity":%s, "Geo":"%s", "Light":%d, "Errors":%d}' % (cfg.deviceId, count, freeMemory, temperature, pressure, humidity, cfg.location, light, errorCount)
 
       try:
         s = socket.socket()
@@ -139,14 +143,16 @@ def main(use_stream=True):
         print('Problem posting data')
         errorCount = errorCount + 1
       finally:
+        builtinLed.value(1) # turn off led
         print('messages sent: %d, errors: %d' % (count, errorCount))
         time.sleep(cfg.sampleRate)
+        
 
 
 
 oledDisplay = initDisplay(i2c)
 if oledDisplay:
-  display.text("wellcome", 0, 0)
+  display.text("welcome", 0, 0)
   display.show()
 
 wlan_connect(cfg.wifiSsid, cfg.wifiPwd)
