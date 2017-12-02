@@ -1,0 +1,13 @@
+{
+  "HubType":"eventhub",
+  "WifiSsid": "NCW",
+  "WifiPwd": "malolos5459",
+  "Host": "glovebox01.servicebus.windows.net",
+  "DeviceId": "wemos10",
+  "Key": "CFu6jEIEwTiPspK587p/jQ8+z9bsQqWiglHob6jryhs=",
+  "SensorModule": "sensor_bme280",
+  "SampleRate": 15,
+  "Location": "syd-lolin32",
+  "EventHubName":"environment",
+  "EventHubPolicyName":"NSW"
+}

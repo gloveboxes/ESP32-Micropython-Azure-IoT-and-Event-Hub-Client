@@ -1,4 +1,5 @@
 import iothub
+import eventhub
 import socket
 import ussl
 import utime as time
@@ -7,16 +8,23 @@ from machine import I2C, Pin, ADC
 import ssd1306 as oled
 import gc
 import config
+import sensor_fake
 
-i2c = I2C(scl=Pin(4), sda=Pin(5))
+# i2c = I2C(scl=Pin(4), sda=Pin(5))
+i2c = I2C(scl=Pin(22), sda=Pin(21))
 builtinLedPin = 5
 
 display = None
 builtinLed = None
 
-cfg = config.Config('config.json')
+cfg = config.Config('config.eventhub.json')
 mySensor = cfg.sensor.Sensor(i2c)
-iot = iothub.IotHub(cfg.host, cfg.deviceId, cfg.key)
+
+
+if cfg.hubType == 'eventhub':
+  hub = eventhub.EventHub(cfg.host, cfg.eventHubName, cfg.eventHubPolicyName, cfg.key)
+elif cfg.hubType == 'iothub':
+  hub = iothub.IotHub(cfg.host, cfg.deviceId, cfg.key)
 
 wlan = network.WLAN(network.STA_IF)
 
@@ -31,7 +39,7 @@ def newSasToken():
         updateSas = True
 
     if updateSas:
-        SAS = iot.generate_sas_token()
+        SAS = hub.generate_sas_token()
         print('Updating Sas')
         updateSas = False
 
@@ -105,8 +113,10 @@ def main(use_stream=True):
             s = ussl.wrap_socket(s)  # SSL wrap
 
             # Send POST request to Azure IoT Hub
-            s.write("POST /devices/" + cfg.deviceId +
-                    "/messages/events?api-version=2016-02-03 HTTP/1.0\r\n")
+            # s.write("POST /devices/" + cfg.deviceId +
+            #         "/messages/events?api-version=2016-02-03 HTTP/1.0\r\n")
+
+            s.write("POST " + hub.endpoint + " HTTP/1.1\r\n")
             # HTTP Headers
             s.write("Host: " + cfg.host + "\r\n")
             s.write("Authorization: " + SAS + "\r\n")

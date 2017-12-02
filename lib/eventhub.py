@@ -6,14 +6,18 @@ import ntptime
 import time
 
 
-class IotHub():
+class EventHub():
 
-    def __init__(self, hubAddress, deviceId, sharedAccessKey):
+    def __init__(self, hubAddress, eventHubName, eventHubPolicyName, sharedAccessKey):
         self.sharedAccessKey = sharedAccessKey
-        self.sasUrl = hubAddress + '/devices/' + deviceId
-        self.hubUser = hubAddress + '/' + deviceId
-        self.endpoint = "/devices/" + deviceId + "/messages/events?api-version=2016-02-03")
+        self.EVENT_HUB_END_POINT = "/%s/publishers/%s/messages"
+        self.eventHubPolicyName = eventHubPolicyName
+        self.eventHubName = eventHubName
+        self.hubAddress = hubAddress
 
+        self.endpoint = self.EVENT_HUB_END_POINT % (
+            self.eventHubName, self.eventHubPolicyName)
+        self.sasUrl = "https://" + self.hubAddress + self.endpoint
 
     # sas generator from https://github.com/bechynsky/AzureIoTDeviceClientPY/blob/master/DeviceClient.py
     def generate_sas_token(self, expiry=3600):  # default to one hour expiry period
@@ -33,12 +37,14 @@ class IotHub():
 
         ttl = now + expiry
         urlToSign = urlencoder.quote(self.sasUrl)
+
         msg = "{0}\n{1}".format(urlToSign, ttl).encode('utf-8')
-        key = base64.b64decode(self.sharedAccessKey)
-        h = hmac.HMAC(key, msg=msg, digestmod=sha256)
+
+        h = hmac.HMAC(bytearray(self.sharedAccessKey),
+                      msg=msg, digestmod=sha256)
         decodedDigest = base64.b64encode(h.digest()).decode()
         signature = urlencoder.quote(decodedDigest)
-        sas = "SharedAccessSignature sr={0}&sig={1}&se={2}".format(
-            urlToSign, signature, ttl)
+        sas = "SharedAccessSignature sr={0}&sig={1}&se={2}&skn={3}".format(
+            urlToSign, signature, ttl, self.eventHubPolicyName)
         # print(sas)
         return sas

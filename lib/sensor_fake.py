@@ -1,5 +1,7 @@
 
 class Sensor():
+    def __init__(self, ignore='ignore'):
+        pass
 
     def measure(self):
         temperature = 21
